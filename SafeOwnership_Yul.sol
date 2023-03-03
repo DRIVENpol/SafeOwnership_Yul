@@ -25,7 +25,7 @@ contract SafeOwnership {
     }
 
     modifier isOwner() {
-        if(_check(msg.sender, currentOwner) == false) revert();
+        if(!_check(msg.sender, currentOwner)) revert();
         _;
     }
 
