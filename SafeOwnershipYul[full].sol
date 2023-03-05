@@ -22,6 +22,8 @@ object "SafeOwnership" {
             function pen_owner() -> p { p := 1 }
 
             // **** Storage access ****
+
+            // Read functions
             function get_init_owner() -> o {
                 o := sload(init_owner())
             }
@@ -30,6 +32,7 @@ object "SafeOwnership" {
                 o := sload(pen_owner())
             }
 
+            // Write functions
             function propose_pen_owner(the_pen_owner) {
                 sstore(get_pen_owner(), the_pen_owner)
             }
@@ -52,9 +55,9 @@ object "SafeOwnership" {
                 if iszero(condition) { revert(0, 0) }
             }
 
-            // // **** Utility functions ****
+            // **** Utility functions ****
 
-            //     // *** Decoding functions ***
+                 // *** Decoding functions ***
                 function selector() -> s {
                     s := div(calldataload(0), 0x100000000000000000000000000000000000000000000000000000000)
                 }
