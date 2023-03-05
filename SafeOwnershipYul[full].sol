@@ -21,6 +21,17 @@ object "SafeOwnership" {
             function init_owner() -> p { p := 0 }
             function pen_owner() -> p { p := 1 }
 
+            // **** Free Memory Functions ****
+            function memPtrPos() -> p { p := 0x40 }
+            function setMemPtr(v) { mstore(memPtrPos(), v) }
+
+            // **** Free Memory Pointers ****
+            // Slot 1: 0x00 -> 0x20
+            // Slot 2: 0x20 -> 0x40
+            // Slot 3: 0x40 -> 0x60 (Mark the start of the free memory zone)
+            // Slot 4: 0x60 -> 0x80 (The free memory pointer)
+            setMemPtr(add(memPtrPos(), 0x20))
+
             // **** Storage access ****
 
             // Read functions
