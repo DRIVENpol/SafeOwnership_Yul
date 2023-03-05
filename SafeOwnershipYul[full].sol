@@ -103,23 +103,44 @@ object "SafeOwnership" {
                 require(newPendingOwner)
                 require(called_by_init_owner())
                 propose_pen_owner(newPendingOwner)
+
+                emitProposed(newPendingOwner)
             }
 
             function claimOwnership() {
                 require(called_by_pen_owner())
                 change_init_owner_reset()
+
+                emitChanged(caller())
+            }
+
+            // **** Events ****
+            function emitProposed(propsed_admin) {
+                // keccak256(bytes("NewProposedAdmin(address)"))
+                let signatureHash := 0x5cb23bdcc570e1a48dd147e3676fec9534c0680a6fa2dac0672bbcc573856163
+                emitEvent(signatureHash, propsed_admin)
+            }
+
+            function emitChanged(new_admin) {
+                // keccak256(bytes("NewAdmin(address)"))
+                let signatureHash := 0x71614071b88dee5e0b2ae578a9dd7b2ebbe9ae832ba419dc0242cd065a290b6c
+                emitEvent(signatureHash, new_admin)
+            }
+
+            function emitEvent(signatureHash, indexed_addr) {
+                log2(0, 0x20, signatureHash, indexed_addr)
             }
 
             // Dispatcher
             switch selector()
 
-            // "proposeOwnership(address)"
+            // abi.encodeWithSignature("proposeOwnership(address)")
             case 0x710bf322 {
                 proposeOwnership(decodeAsAddress(0))
                 returnTrue()
             }
 
-            // "claimOwnership()"
+            // abi.encodeWithSignature("claimOwnership()")
             case 0x4e71e0c8 {
                 claimOwnership()
                 returnTrue()
